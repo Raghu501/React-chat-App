@@ -1,4 +1,3 @@
-const socketManager = require("./SocketManager");
 const express = require("express");
 const http = require("http");
 const app = express();
@@ -8,25 +7,10 @@ const port = 5000;
 server.listen(port, () => console.log(`Listening on port ${port}`));
 const socketIo = require("socket.io");
 
-const io = (module.exports = socketIo(server, {
+const io = (module.exports.io = socketIo(server, {
   cors: {
     origin: "*",
   },
 }));
-
+const socketManager = require("./SocketManager");
 io.on("connection", socketManager);
-io.on("logout", (socket) => {
-  socket.disconnect();
-});
-
-io.on("verifyuser", (socket, callback) => {
-  //check user exists
-  //build user object
-  callback(true);
-});
-
-io.on("userconnected", (socket) => {
-  //broadcast to all connected clients
-});
-
-//const router= exress.Router();

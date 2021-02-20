@@ -1,41 +1,42 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import Login from "./Login";
+import ChatContainer from "./ChatContainer";
 
 export default function Layout() {
-  const [loginSuccess, setLoginSuccess] = useState(false);
   const [socket, setSocket] = useState();
   const [user, setUser] = useState();
   const url = "http://localhost:5000/";
 
   useEffect(() => {
-    alert();
+    // alert();
     const socket = io(url);
     socket.on("connect", () => {
-      alert();
+      //alert();
       console.log("connected");
       setSocket(socket);
     });
-  }, []);
+  }, [user]);
 
   function logout() {
     //disconnect from s(ocket
-    socket.emit("logout");
+    socket.emit("logout", user);
     setUser(null);
   }
 
-  function setUser(user) {
+  function setUserLayout(user) {
     setUser(user);
-
-    socket.emit("userconnected", user, () => {
-      setLoginSuccess(true);
-    });
+    console.log(user);
+    socket.emit("userconnected", user);
   }
 
   return (
     <div>
-      loginSuccess?<Dashboard></Dashboard>:
-      <Login socket={socket} setUser={setUser}></Login>
+      {user ? (
+        <ChatContainer user={user} socket={socket} logout={logout} />
+      ) : (
+        <Login socket={socket} setUserLayout={setUserLayout}></Login>
+      )}
     </div>
   );
 }
